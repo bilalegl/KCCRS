@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "MainSwing",
+      "request": "launch",
+      "mainClass": "kccrs.MainSwing",
+      "projectName": "KCCRS_26d99e2c"
+    },
+    {
+      "type": "java",
+      "name": "Run KCCRS",
+      "request": "launch",
+      "mainClass": "kccrs.Main",
+      "vmArgs": "--module-path \"C:/Users/bilal/OneDrive/Desktop/KCCRS/lib\" --add-modules javafx.controls,javafx.fxml"
+    }
+  ]
+}

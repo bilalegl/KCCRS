@@ -1,0 +1,35 @@
+/* Root background */
+.root {
+    -fx-font-family: "Arial";
+    -fx-background-color: linear-gradient(to bottom, #e0f7fa, #80deea);
+}
+
+/* Buttons styling */
+.button {
+    -fx-background-radius: 10;
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+}
+
+/* Button hover effect */
+.button:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* TableView header */
+.table-view .column-header-background {
+    -fx-background-color: #0288D1;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 30px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
