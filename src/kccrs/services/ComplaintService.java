@@ -59,27 +59,31 @@ public class ComplaintService {
         return complaintList.searchByID(id);
     }
 
-    // Process next complaint (FIFO)
-    public Complaint processNextComplaint() {
-        Complaint complaint = processingQueue.dequeue();
-        if (complaint != null) {
-            undoStack.push(complaint);
-            saveProcessedComplaint(complaint);
-            deleteFromActive(complaint);
-        }
-        return complaint;
-    }
+public Complaint processNextComplaint() {
+    Complaint complaint = processingQueue.dequeue();
+    if (complaint != null) {
 
-    // Process next urgent complaint (Priority Queue)
-    public Complaint processNextUrgentComplaint() {
-        Complaint complaint = priorityQueue.pop();
-        if (complaint != null) {
-            undoStack.push(complaint);
-            saveProcessedComplaint(complaint);
-            deleteFromActive(complaint);
-        }
-        return complaint;
+        undoStack.push(complaint);
+        saveProcessedComplaint(complaint);
+        deleteFromActive(complaint);
+        saveComplaints();
     }
+    return complaint;
+}
+
+
+public Complaint processNextUrgentComplaint() {
+    Complaint complaint = priorityQueue.pop();
+    if (complaint != null) {
+
+        undoStack.push(complaint);
+        saveProcessedComplaint(complaint);
+        deleteFromActive(complaint);
+        saveComplaints();
+    }
+    return complaint;
+}
+
 
     // Display all complaints
     public void displayAllComplaints() {
@@ -102,37 +106,50 @@ public class ComplaintService {
         return complaint;
     }
 
-    // Load complaints from CSV
-    private void loadComplaints() {
-        List<Complaint> complaints = CSVHandler.loadComplaints(complaintFile);
-        for (Complaint c : complaints) {
-            complaintList.add(c);
-            processingQueue.enqueue(c);
-            priorityQueue.push(c);
-            hashTable.insert(c);
+private void loadComplaints() {
+
+    List<Complaint> processedList = CSVHandler.loadComplaints(processedFile);
+    java.util.Set<String> processedIds = new java.util.HashSet<>();
+
+    for (Complaint pc : processedList)
+        processedIds.add(pc.getId());
+
+
+    List<Complaint> complaints = CSVHandler.loadComplaints(complaintFile);
+
+    for (Complaint c : complaints) {
+
+
+        if (processedIds.contains(c.getId())) {
+            continue;
+        }
+
+        complaintList.add(c);
+        processingQueue.enqueue(c);
+        priorityQueue.push(c);
+        hashTable.insert(c);
+    }
+}
+
+
+private void saveComplaints() {
+    List<Complaint> list = complaintList.toList();
+    CSVHandler.saveComplaints(list, complaintFile);
+}
+
+
+private void saveProcessedComplaint(Complaint complaint) {
+    List<Complaint> processed = CSVHandler.loadComplaints(processedFile);
+
+    for (Complaint c : processed) {
+        if (c.getId().equals(complaint.getId())) {
+            return; // already saved
         }
     }
 
-    // Save complaints to CSV
-    private void saveComplaints() {
-
-        /**
-         * ❗ FIXED: Your previous code had wrong logic.
-         * You said “LinkedList does not expose iterator” but that is YOUR custom LinkedList.
-         * So I rewrote save logic to use complaintList.toList()
-         * (You MUST implement toList() in ComplaintLinkedList).
-         */
-
-        List<Complaint> list = complaintList.toList(); // <-- FIXED
-        CSVHandler.saveComplaints(list, complaintFile);
-    }
-
-    // Save processed complaint separately
-    private void saveProcessedComplaint(Complaint complaint) {
-        List<Complaint> processed = CSVHandler.loadComplaints(processedFile);
-        processed.add(complaint);
-        CSVHandler.saveComplaints(processed, processedFile);
-    }
+    processed.add(complaint);
+    CSVHandler.saveComplaints(processed, processedFile);
+}
 
     // Delete complaint from active data structures
     private void deleteFromActive(Complaint complaint) {

@@ -80,9 +80,6 @@ public class ComplaintLinkedList {
         return size;
     }
 
-    // --------------------------------------------------------------------
-    // ✅ ADDED METHOD: Converts LinkedList → List<Complaint>
-    // --------------------------------------------------------------------
     public List<Complaint> toList() {
         List<Complaint> list = new ArrayList<>();
         Node current = head;

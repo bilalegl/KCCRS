@@ -1,7 +1,6 @@
 package kccrs.datastructures.hashtable;
 
 import kccrs.models.Complaint;
-import java.util.LinkedList;
 
 public class ComplaintHashTable {
     private class HashNode {

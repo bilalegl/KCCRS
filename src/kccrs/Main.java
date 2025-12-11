@@ -194,41 +194,70 @@ public class Main extends Application {
     }
 
     /** TAB 4: Daily Reports */
-    private Tab createReportTab() {
-        Tab tab = new Tab("📊 Daily Report");
-        tab.setClosable(false);
+private Tab createReportTab() {
+    Tab tab = new Tab("📊 Daily Report");
+    tab.setClosable(false);
 
-        VBox vbox = new VBox(20);
-        vbox.setPadding(new Insets(20));
+    VBox vbox = new VBox(20);
+    vbox.setPadding(new Insets(20));
 
-        Button btnSortArea = new Button("Sort by Area");
-        styleButton(btnSortArea, "#3F51B5");
-        btnSortArea.setOnAction(e -> {
-            ReportService report = new ReportService(complaintService.getAllActiveComplaints());
-            report.sortByArea();
-            report.displayReport();
-        });
+    TableView<Complaint> reportTable = new TableView<>();
+    reportTable.setPrefHeight(400);
 
-        Button btnSortSeverity = new Button("Sort by Severity");
-        styleButton(btnSortSeverity, "#009688");
-        btnSortSeverity.setOnAction(e -> {
-            ReportService report = new ReportService(complaintService.getAllActiveComplaints());
-            report.sortBySeverity();
-            report.displayReport();
-        });
+    // Columns (same as main table)
+    TableColumn<Complaint, String> idCol = new TableColumn<>("ID");
+    idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        Button btnSortTime = new Button("Sort by Time");
-        styleButton(btnSortTime, "#795548");
-        btnSortTime.setOnAction(e -> {
-            ReportService report = new ReportService(complaintService.getAllActiveComplaints());
-            report.sortByTime();
-            report.displayReport();
-        });
+    TableColumn<Complaint, String> nameCol = new TableColumn<>("Citizen");
+    nameCol.setCellValueFactory(new PropertyValueFactory<>("citizenName"));
 
-        vbox.getChildren().addAll(btnSortArea, btnSortSeverity, btnSortTime);
-        tab.setContent(vbox);
-        return tab;
-    }
+    TableColumn<Complaint, String> areaCol = new TableColumn<>("Area");
+    areaCol.setCellValueFactory(new PropertyValueFactory<>("area"));
+
+    TableColumn<Complaint, String> typeCol = new TableColumn<>("Type");
+    typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+
+    TableColumn<Complaint, String> severityCol = new TableColumn<>("Severity");
+    severityCol.setCellValueFactory(new PropertyValueFactory<>("severity"));
+
+    TableColumn<Complaint, String> timeCol = new TableColumn<>("Timestamp");
+    timeCol.setCellValueFactory(new PropertyValueFactory<>("timestamp"));
+
+    reportTable.getColumns().addAll(idCol, nameCol, areaCol, typeCol, severityCol, timeCol);
+
+
+    Button btnSortArea = new Button("Sort by Area");
+    styleButton(btnSortArea, "#3F51B5");
+    btnSortArea.setOnAction(e -> {
+        ReportService report = new ReportService(complaintService.getAllActiveComplaints());
+        report.sortByArea();
+
+        reportTable.getItems().setAll(report.getComplaints());
+    });
+
+    Button btnSortSeverity = new Button("Sort by Severity");
+    styleButton(btnSortSeverity, "#009688");
+    btnSortSeverity.setOnAction(e -> {
+        ReportService report = new ReportService(complaintService.getAllActiveComplaints());
+        report.sortBySeverity();
+
+        reportTable.getItems().setAll(report.getComplaints());
+    });
+
+    Button btnSortTime = new Button("Sort by Time");
+    styleButton(btnSortTime, "#795548");
+    btnSortTime.setOnAction(e -> {
+        ReportService report = new ReportService(complaintService.getAllActiveComplaints());
+        report.sortByTime();
+
+        reportTable.getItems().setAll(report.getComplaints());
+    });
+
+    vbox.getChildren().addAll(btnSortArea, btnSortSeverity, btnSortTime, reportTable);
+    tab.setContent(vbox);
+    return tab;
+}
+
 
     /** TableView Columns with Priority Highlighting */
     private void setupTableColumns() {

@@ -112,4 +112,9 @@ public class ReportService {
     public List<Complaint> getReport() {
         return complaints;
     }
+    
+    public List<Complaint> getComplaints() {
+    return complaints;
+}
+
 }
